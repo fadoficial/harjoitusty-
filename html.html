@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNQ Archive | Handmade & Upcycled Helsinki</title>
+    
+    <style>
+        /* PERUSASETUKSET (Base styles) */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background: #000; 
+            color: #fff; 
+            line-height: 1.6; 
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* SUODATUSLOGIIKKA (Filter logic using hidden radio buttons) */
+        input[type="radio"] { display: none; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* NAVIGOINTI (Sticky Navbar) */
+        header { 
+            border-bottom: 1px solid #222; 
+            position: sticky; 
+            top: 0; 
+            background: rgba(0, 0, 0, 0.9); 
+            backdrop-filter: blur(10px);
+            z-index: 1000; 
+            padding: 20px 0; 
+        }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; text-transform: uppercase; }
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a { text-decoration: none; color: #fff; font-size: 0.8rem; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
+        nav a:hover { color: #888; }
+
+        /* HERO JA TARINA (Main section and sister's story) */
+        .hero { padding: 140px 0 60px; text-align: center; }
+        .hero h1 { font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -4px; line-height: 0.85; margin-bottom: 30px; text-transform: uppercase; }
+        
+        .story-section { padding: 40px 0 100px; text-align: center; max-width: 700px; margin: 0 auto; }
+        .story-section p { font-size: 1.15rem; color: #aaa; font-style: italic; line-height: 1.8; }
+
+        /* SUODATTIMEN TYYLIT (Filter controls) */
+        .filter-section { text-align: center; margin: 40px 0 60px; }
+        .filter-label { 
+            display: inline-block; padding: 12px 28px; margin: 5px; 
+            border: 1px solid #fff; color: #fff; cursor: pointer; 
+            font-weight: bold; text-transform: uppercase; font-size: 11px; transition: 0.3s; 
+        }
+        .filter-label:hover { background: #222; }
+
+        /* RYHMIEN KOROSTUS (CSS target logic for highlighting groups) */
+        #all:checked ~ .container .filter-all,
+        #v-filter:checked ~ .container .filter-v,
+        #a-filter:checked ~ .container .filter-a,
+        #n-filter:checked ~ .container .filter-n { 
+            border: 1px solid #fff; 
+            box-shadow: 0 0 25px rgba(255,255,255,0.25); 
+            transform: translateY(-5px); 
+        }
+
+        /* TUOTEGRIDI (Responsive Grid with Flexbox/Grid) */
+        .row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
+        .column { flex: 25%; max-width: 25%; padding: 15px; margin-bottom: 40px; transition: 0.5s; }
+
+        /* TUOTEKORTTI (Product card design) */
+        .card { 
+            background-color: #000; border: 1px solid #222; 
+            height: 100%; display: flex; flex-direction: column; overflow: hidden; transition: 0.4s;
+        }
+        .img-container { position: relative; width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #fff; border-bottom: 1px solid #222; }
+        .image { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.6s; }
+        .card:hover .image { filter: grayscale(0%); transform: scale(1.05); }
+
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; background: rgba(0,0,0,0.8); transition: 0.4s; display: flex; align-items: center; justify-content: center; }
+        .card:hover .overlay { opacity: 1; }
+        .overlay-text { color: #fff; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
+
+        .badge { position: absolute; top: 12px; left: 12px; background: #000; color: #fff; padding: 5px 10px; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; z-index: 10; border: 1px solid #222; }
+        .badge.sold { background: #fff; color: #ff0000; border: 1px solid #ff0000; }
+
+        .card-body { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-body h3 { font-size: 1.1rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: -0.5px; }
+        .tag { font-size: 0.75rem; color: #555; margin-bottom: 12px; text-transform: uppercase; }
+        .price { font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; }
+
+        .btn-buy { 
+            width: 100%; padding: 20px; background: #fff; color: #000; border: none; 
+            font-weight: 800; text-transform: uppercase; cursor: pointer; font-size: 0.75rem; 
+            text-align: center; text-decoration: none; margin-top: auto; display: block; transition: 0.3s;
+        }
+        .btn-buy:hover { background: #ccc; }
+        .btn-buy:disabled { background: #111; color: #444; cursor: not-allowed; }
+
+        /* YHTEYDENOTTO (Contact section) */
+        .contact-section { background: #080808; padding: 120px 0; border-top: 1px solid #111; }
+        .contact-wrapper { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; }
+        .contact-form input, .contact-form textarea { width: 100%; padding: 18px; margin-bottom: 20px; border: 1px solid #222; background: #000; color: #fff; font-size: 1rem; font-family: inherit; transition: 0.3s; }
+        .contact-form input:focus { border-color: #fff; outline: none; }
+        .contact-form textarea { height: 160px; resize: none; }
+
+        /* ALAVIITE (Footer) */
+        footer { padding: 80px 0; border-top: 1px solid #111; text-align: center; font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 4px; }
+
+        /* RESPONSIIVISUUS (Responsive Web Design) */
+        @media (max-width: 1100px) { .column { flex: 50%; max-width: 50%; } }
+        @media (max-width: 768px) { 
+            .hero { padding: 100px 0 40px; }
+            .hero h1 { font-size: 3.5rem; } 
+            .contact-wrapper { grid-template-columns: 1fr; gap: 50px; } 
+            .column { flex: 100%; max-width: 100%; } 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SUODATUSPAINIKKEET -->
+    <input type="radio" name="sort" id="all" checked>
+    <input type="radio" name="sort" id="v-filter">
+    <input type="radio" name="sort" id="a-filter">
+    <input type="radio" name="sort" id="n-filter">
+
+    <!-- NAVIGOINTI -->
+    <header>
+        <nav class="container">
+            <div class="logo">UNQ Archive</div>
+            <ul>
+                <li><a href="#shop">Shop</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- PÄÄOSIO JA TARINA -->
+    <section class="hero">
+        <div class="container">
+            <h1>UNQ ARCHIVE</h1>
+            <div class="story-section">
+                <p>
+                    Sivuston takana on siskoni, taitava käsityöläinen, joka työskentelee Helsingissä. 
+                    Hän on aina unelmoinut omasta yrityksestä. Kun tarvittavat lisenssit on saatu ja tämä sivusto 
+                    on julkaistu, hänen suuri unelmansa vihdoin toteutuu.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TUOTELUETTELO JA SUODATUS -->
+    <main class="container" id="shop">
+        <div class="filter-section">
+            <label for="all" class="filter-label">Kaikki</label>
+            <label for="v-filter" class="filter-label">Vaatteet</label>
+            <label for="a-filter" class="filter-label">Asusteet</label>
+            <label for="n-filter" class="filter-label">Uutuudet</label>
+        </div>
+
+        <div class="row">
+            <!-- 1. TUOTE -->
+            <div class="column filter-all filter-v">
+                <div class="card">
+                    <span class="badge sold">Sold Out</span>
+                    <div class="img-container">
+                        <img src="noimage.png" class="image" alt="Patchwork Hoodie">
+                        <div class="overlay"><span class="overlay-text">Archive Only</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Patchwork Hoodie</h3>
+                        <p class="tag">Vaate / Size L / Cotton</p>
+                        <p class="price">89,00 €</p>
+                    </div>
+                    <button class="btn-buy" disabled>Sold Out</button>
+                </div>
+            </div>
+
+            <!-- 2. TUOTE -->
+            <div class="column filter-all filter-v">
+                <div class="card">
+                    <span class="badge">Unique</span>
+                    <div class="img-container">
+                        <img src="noimage.png" class="image" alt="Denim Jacket">
+                        <div class="overlay"><span class="overlay-text">1 of 1 Pieces</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Archive Denim Jacket</h3>
+                        <p class="tag">Vaate / Size M / Denim</p>
+                        <p class="price">125,00 €</p>
+                    </div>
+                    <a href="#contact" class="btn-buy">Inquire</a>
+                </div>
+            </div>
+
+            <!-- 3. TUOTE (Uutuus) -->
+            <div class="column filter-all filter-v filter-n">
+                <div class="card">
+                    <span class="badge">New Release</span>
+                    <div class="img-container">
+                        <img src="noimage.png" class="image" alt="Military Vest">
+                        <div class="overlay"><span class="overlay-text">Sustainable Art</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Military Cargo Vest</h3>
+                        <p class="tag">Uutuus / Size XL / Canvas</p>
+                        <p class="price">145,00 €</p>
+                    </div>
+                    <a href="#contact" class="btn-buy">Inquire</a>
+                </div>
+            </div>
+
+            <!-- 4. TUOTE -->
+            <div class="column filter-all filter-a">
+                <div class="card">
+                    <span class="badge">Handmade</span>
+                    <div class="img-container">
+                        <img src="noimage.png" class="image" alt="Boro Beanie">
+                        <div class="overlay"><span class="overlay-text">Custom Knit</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Boro Beanie</h3>
+                        <p class="tag">Asuste / Wool Blend</p>
+                        <p class="price">40,00 €</p>
+                    </div>
+                    <a href="#contact" class="btn-buy">Inquire</a>
+                </div>
+            </div>
+
+            <!-- 5. TUOTE -->
+            <div class="column filter-all filter-a">
+                <div class="card">
+                    <span class="badge">Recycled</span>
+                    <div class="img-container">
+                        <img src="noimage.png" class="image" alt="Tote Bag">
+                        <div class="overlay"><span class="overlay-text">Daily Essential</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Denim Tote Bag</h3>
+                        <p class="tag">Asuste / Patchwork Denim</p>
+                        <p class="price">45,00 €</p>
+                    </div>
+                    <a href="#contact" class="btn-buy">Inquire</a>
+                </div>
+            </div>
+
+            <!-- 6. TUOTE (Uutuus) -->
+            <div class="column filter-all filter-a filter-n">
+                <div class="card">
+                    <span class="badge">Limited</span>
+                    <div class="img-container">
+                        <img src="noimage.png" class="image" alt="Canvas Pouch">
+                        <div class="overlay"><span class="overlay-text">Waxed Finish</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Canvas Utility Pouch</h3>
+                        <p class="tag">Uutuus / Waxed Canvas</p>
+                        <p class="price">35,00 €</p>
+                    </div>
+                    <a href="#contact" class="btn-buy">Inquire</a>
+                </div>
+            </div>
+
+            <!-- 7. TUOTE -->
+            <div class="column filter-all filter-a">
+                <div class="card">
+                    <span class="badge">Handmade</span>
+                    <div class="img-container">
+                        <img src="noimage.png" class="image" alt="Upcycled Belt">
+                        <div class="overlay"><span class="overlay-text">Custom Detail</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Upcycled Leather Belt</h3>
+                        <p class="tag">Asuste / Leather Scraps</p>
+                        <p class="price">30,00 €</p>
+                    </div>
+                    <a href="#contact" class="btn-buy">Inquire</a>
+                </div>
+            </div>
+
+            <!-- 8. TUOTE -->
+            <div class="column filter-all filter-v">
+                <div class="card">
+                    <span class="badge sold">Sold Out</span>
+                    <div class="img-container">
+                        <img src="noimage.png" class="image" alt="Chaos Flannel">
+                        <div class="overlay"><span class="overlay-text">Sold Archive</span></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>Chaos Flannel Shirt</h3>
+                        <p class="tag">Vaate / Size M / Wool</p>
+                        <p class="price">75,00 €</p>
+                    </div>
+                    <button class="btn-buy" disabled>Sold Out</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- YHTEYDENOTTO -->
+    <section id="contact" class="contact-section">
+        <div class="container contact-wrapper">
+            <div>
+                <h2 style="text-transform: uppercase; font-size: 2.5rem; letter-spacing: -2px; margin-bottom: 20px;">Kysymykset & Yhteydenotto</h2>
+                <p style="color: #666; font-size: 1.1rem;">Kiinnostuitko tuotteista tai haluatko tilata jotain uniikkia? Lähetä viesti tähän, niin palaamme asiaan mahdollisimman pian.</p>
+            </div>
+            <form class="contact-form" action="#">
+                <input type="text" placeholder="Nimesi" required>
+                <input type="email" placeholder="Sähköpostiosoite" required>
+                <textarea placeholder="Kirjoita viestisi täähän..."></textarea>
+                <button type="submit" class="btn-buy">Lähetä tiedustelu</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ALAVIITE -->
+    <footer>
+        <p>&copy; 2026 ASÄÄ STUDIO / UNQ ARCHIVE. ALL RIGHTS RESERVED. DESIGNED BY ALEKSEI KROTKOV.</p>
+    </footer>
+
+</body>
+</html>
