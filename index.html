@@ -6,7 +6,7 @@
     <title>UNQ Archive | Handmade & Upcycled Helsinki</title>
     
     <style>
-        /* PERUSASETUKSET (Base styles) */
+        /* PERUSASETUKSET */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body { 
@@ -17,7 +17,7 @@
             -webkit-font-smoothing: antialiased;
         }
         
-        /* SUODATUSLOGIIKKA (Filter logic using hidden radio buttons) */
+        /* SUODATUSLOGIIKKA  */
         input[type="radio"] { display: none; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -38,14 +38,14 @@
         nav a { text-decoration: none; color: #fff; font-size: 0.8rem; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
         nav a:hover { color: #888; }
 
-        /* HERO JA TARINA (Main section and sister's story) */
+        /* HERO JA TARINA  */
         .hero { padding: 140px 0 60px; text-align: center; }
         .hero h1 { font-size: clamp(3rem, 10vw, 6rem); letter-spacing: -4px; line-height: 0.85; margin-bottom: 30px; text-transform: uppercase; }
         
         .story-section { padding: 40px 0 100px; text-align: center; max-width: 700px; margin: 0 auto; }
         .story-section p { font-size: 1.15rem; color: #aaa; font-style: italic; line-height: 1.8; }
 
-        /* SUODATTIMEN TYYLIT (Filter controls) */
+        /* SUODATTIMEN TYYLIT  */
         .filter-section { text-align: center; margin: 40px 0 60px; }
         .filter-label { 
             display: inline-block; padding: 12px 28px; margin: 5px; 
@@ -54,7 +54,7 @@
         }
         .filter-label:hover { background: #222; }
 
-        /* RYHMIEN KOROSTUS (CSS target logic for highlighting groups) */
+        /* RYHMIEN KOROSTUS  */
         #all:checked ~ .container .filter-all,
         #v-filter:checked ~ .container .filter-v,
         #a-filter:checked ~ .container .filter-a,
@@ -64,11 +64,11 @@
             transform: translateY(-5px); 
         }
 
-        /* TUOTEGRIDI (Responsive Grid with Flexbox/Grid) */
+        /* TUOTEGRIDI  */
         .row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
         .column { flex: 25%; max-width: 25%; padding: 15px; margin-bottom: 40px; transition: 0.5s; }
 
-        /* TUOTEKORTTI (Product card design) */
+        /* TUOTEKORTTI  */
         .card { 
             background-color: #000; border: 1px solid #222; 
             height: 100%; display: flex; flex-direction: column; overflow: hidden; transition: 0.4s;
@@ -97,7 +97,7 @@
         .btn-buy:hover { background: #ccc; }
         .btn-buy:disabled { background: #111; color: #444; cursor: not-allowed; }
 
-        /* YHTEYDENOTTO (Contact section) */
+        /* YHTEYDENOTTO  */
         .contact-section { background: #080808; padding: 120px 0; border-top: 1px solid #111; }
         .contact-wrapper { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; }
         .contact-form input, .contact-form textarea { width: 100%; padding: 18px; margin-bottom: 20px; border: 1px solid #222; background: #000; color: #fff; font-size: 1rem; font-family: inherit; transition: 0.3s; }
@@ -107,7 +107,7 @@
         /* ALAVIITE (Footer) */
         footer { padding: 80px 0; border-top: 1px solid #111; text-align: center; font-size: 0.7rem; color: #444; text-transform: uppercase; letter-spacing: 4px; }
 
-        /* RESPONSIIVISUUS (Responsive Web Design) */
+        /* RESPONSIIVISUUS  */
         @media (max-width: 1100px) { .column { flex: 50%; max-width: 50%; } }
         @media (max-width: 768px) { 
             .hero { padding: 100px 0 40px; }
